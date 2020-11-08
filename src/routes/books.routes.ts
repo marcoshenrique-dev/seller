@@ -5,6 +5,8 @@ import { getCustomRepository } from 'typeorm';
 import BooksRepository from '../repositories/BooksRepository';
 
 import CreateBookService from '../services/CreateBookService';
+import UpdateBookNameService from '../services/UpdateBookNameService';
+import UpdateBookPriceService from '../services/UpdateBookPriceService';
 
 const BooksRouter = Router();
 
@@ -27,6 +29,36 @@ BooksRouter.post('/', async (request, response) => {
       return response.status(400).send({
          message: err.message,
       });
+   }
+});
+
+BooksRouter.patch('/name', async (request, response) => {
+   try {
+      const { name, id } = request.body;
+      const updateBookNameService = new UpdateBookNameService();
+      const book = await updateBookNameService.execute({
+         book_id: id,
+         name,
+      });
+
+      return response.json(book);
+   } catch (err) {
+      return response.status(400).json(err.message);
+   }
+});
+
+BooksRouter.patch('/price', async (request, response) => {
+   try {
+      const { price, id } = request.body;
+      const updateBookPriceService = new UpdateBookPriceService();
+      const book = await updateBookPriceService.execute({
+         book_id: id,
+         price,
+      });
+
+      return response.json(book);
+   } catch (err) {
+      return response.status(400).json(err.message);
    }
 });
 
